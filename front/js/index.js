@@ -35,4 +35,3 @@ document.getElementById("items").innerHTML=products;
 }).catch((err)=>{
   console.log(err);
 })
-
