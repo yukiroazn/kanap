@@ -1,140 +1,120 @@
 // Méthode urlSearchParams pour afficher le produit
-const queryString = (window.location.search)
-const urlParams = new URLSearchParams(queryString)
-const id = urlParams.get(`id`)
+let params = new URL(window.location.href).searchParams;
+let newID = params.get('id');
+
+// je crée les variables dont j'ai besoin pour manipuler cette page :
+const image = document.getElementsByClassName('item__img');
+const title = document.getElementById('title');
+const price = document.getElementById('price');
+const description = document.getElementById('description');
+const colors = document.getElementById('colors');
+
+let imageURL = "";
+let imageAlt = "";
 
 // Récupération des articles via Fetch API 
-// En mettant ${id} permet d'afficher un produit
-fetch(`http://localhost:3000/api/products/${id}`)
-    .then((response) => response.json())
-    .then((res) => data(res))
+// je crée la bonne URL pour chaque produit choisi en ajoutant newID
+fetch("http://localhost:3000/api/products/" + newID)
+  .then(res => res.json())
+  .then(data => {
+     
+// Donneés de l'API : je modifie le contenu de chaque variable avec le code HTML
 
-// Donneés de l'API
-data = (sofa) =>
-{
-  const altTxt = sofa.altTxt
-  const colors = sofa.colors
-  const description = sofa.description
-  const imageUrl = sofa.imageUrl
-  const title = sofa.name
-  const price = sofa.price
+// Affichage Image et AlTxt, Titre, Prix, Description,
+  image[0].innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
+  imageURL = data.imageUrl;
+  imageAlt = data.altTxt;
+  title.innerHTML = `<h1>${data.name}</h1>`;
+  price.innerText = `${data.price}`;
+  description.innerText = `${data.description}`;
 
-  itemPrice = price
-  imgUrl = imageUrl
-  altText = altTxt
-  articleName = title
-
-  showImage(imageUrl)
-  showAltTxt(altTxt)
-  showTitle(title)
-  showPrice(price)
-  showDescription(description)
-  showColors(colors)
-}
-
-// Affichage Image
-showImage = (imageUrl) =>
-{
-  const containerImg = document.querySelector(`.item__img`)
-  const image = document.createElement(`img`)
-  image.src = imageUrl
-  containerImg.append(image)
-  console.log(imageUrl)
-}
-
-// Affichage Alt Text Image
-showAltTxt = (altTxt) =>
-{
-  const altTxtUrl = document.createElement(`alt`)
-  altTxtUrl.innerText = altTxt
-  console.log(altTxt)
-}
-
-// Affichage Titre
-showTitle = (title) =>
-{
-  const titleTxt = document.querySelector(`#title`)
-  titleTxt.innerText = title
-  console.log(title)
-}
-
-// Affichage Prix
-showPrice = (price) => 
-{
-  const priceTxt = document.querySelector(`#price`)
-  priceTxt.innerText = price
-  console.log(price)
-}
-
-// Affichage Description
-showDescription = (description) =>
-{
-  const descriptionTxt = document.querySelector(`#description`)
-  descriptionTxt.innerText = description
-  console.log(description)
-}
-
-// Affichage Couleurs
-showColors = (colors) => 
-{
-  const colorsList = document.querySelector(`#colors`)
-
-  colors.forEach(color => 
-  {
-
-  const list = document.createElement(`option`)
-  list.innerText = color
-  colorsList.append(list)
-
-  });
-    console.log(colors)
+// Affichage Couleurs + Option
+  for (number in data.colors) {
+  colors.options[colors.options.length] = new Option
+  (
+  data.colors[number],data.colors[number]
+  )
   }
-  
+  })
+
+// Message erreur si le serveur ne correspond pas
+  .catch(_error => {
+  alert('error');
+  });
+
 // Add to cart 
-const addCart = document.querySelector("#addToCart")
-{
+const addToCart = document.getElementById('addToCart');
 
 // Event click pour récupérer color et quantity une fois cliqué
-addCart.addEventListener("click", () => {
-const color = document.querySelector("#colors").value
-const quantity = document.querySelector("#quantity").value
+addToCart.addEventListener('click', () => {
+const selectColors = document.querySelector("#colors").value
+const selectQuantity = document.querySelector("#quantity").value
 
-//Warning message en cas un oubli de mettre des informations
-if ( color === "" ) 
+//Warning message ou cas un oubli de mettre des informations
+if ( selectColors === "" ) 
 {
 alert("Choisissez une couleur SVP")
 return true
 } 
 
-if ( quantity == 0 || quantity > 100 )
+if ( selectQuantity == 0 || quantity > 100 )
 {
 alert("Saisissez une quantitée inférieur à 100")
 return true
-} 
- 
-//Exécution data de produit
-const key = `${id}-${color}`
-const data = 
-{
-id: key,
-color: color,
-quantity: Number(quantity),
-price: itemPrice,
-imageUrl: imgUrl,
-altTxt: altText,
-name: articleName
 }
+
+//Exécution data de produit
+const selection = {
+  id: newID,
+  image: imageURL,
+  alt: imageAlt,
+  name: title.textContent,
+  price: price.textContent,
+  color: selectColors,
+  quantity: selectQuantity,
+  };
 
 //Importation data de produit dans local storage (add to cart)
-localStorage.setItem(key, JSON.stringify(data))
+let productInLocalStorage =  JSON.parse(localStorage.getItem('product'));
+
+const addProductLocalStorage = () => 
+{
+productInLocalStorage.push(selection);
+localStorage.setItem('product', JSON.stringify(productInLocalStorage));
+}
 
 //Message confirmation item added to cart
-if ( window.confirm )
+let addConfirm = () => 
 {
-alert("Votre article a été bien ajouté dans le panier")
-return true
+alert("Votre article a été bien ajouté dans le panier");
 }
 
-})
+let update = false;
   
-}
+// s'il y a des produits enregistrés dans le localStorage
+if (productInLocalStorage) {
+
+// verifier que le produit ne soit pas deja dans le localstorage/panier
+// avec la couleur
+productInLocalStorage.forEach (function (productOk, key) {
+if (productOk.id == newID && productOk.color == selectColors.value) {
+  productInLocalStorage[key].quantity = parseInt(productOk.quantity) + parseInt(selectQuantity.value);
+  localStorage.setItem('product', JSON.stringify(productInLocalStorage));
+  update = true;
+  addConfirm();
+  }
+  });
+
+if (!update) {
+  addProductLocalStorage();
+  addConfirm();
+  }
+  }
+
+// s'il n'y a aucun produit enregistré dans le localStorage, je crée alors un tableau avec les éléments choisi par l'utilisateur
+  else {
+    productInLocalStorage = [];
+    addProductLocalStorage();
+    addConfirm();
+  }
+});
