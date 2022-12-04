@@ -4,10 +4,10 @@ let productInLocalStorage = JSON.parse(localStorage.getItem('product'));
 
 // AFFICHER LES PRODUITS DU PANIER
 
- // je sélectionne la partie html concernée par la modification
- let cartAndFormContainer = document.getElementById('cartAndFormContainer');
+// je sélectionne la partie html concernée par la modification
+let cartAndFormContainer = document.getElementById('cartAndFormContainer');
 
- // si le panier est vide : afficher 'le panier est vide'
+// si le panier est vide : afficher 'le panier est vide'
 if(productInLocalStorage === null || productInLocalStorage == 0) {
   document.querySelector("#cart__items").innerHTML =`
   <div class="cart__empty">
@@ -18,12 +18,11 @@ if(productInLocalStorage === null || productInLocalStorage == 0) {
 else{
   let itemCards = [];
  
-  // expression initiale; condition; incrémentation
-  for (i = 0; i < productInLocalStorage.length; i++) {
+// expression initiale; condition; incrémentation
+for (i = 0; i < productInLocalStorage.length; i++) {
   products.push(productInLocalStorage[i].id);
  
-  // le code suivant sera injecté à chaque tour de boucle
-  // selon la longueur des produits dans le local storage
+// le code suivant sera injecté à chaque tour de boucle, selon la longueur des produits dans le local storage
   itemCards = itemCards + `
     
     <article class="cart__item" data-id="${productInLocalStorage[i].id}" data-color="${productInLocalStorage.color}">
@@ -135,22 +134,20 @@ totalArticles();
 function priceAmount() {
   const calculPrice = [];
   for (m = 0; m < productInLocalStorage.length; m++) {
-    // prix de l'article quantité * prix
-    const cartAmount = productInLocalStorage[m].price * productInLocalStorage[m].quantity;
+
+// prix de l'article quantité * prix
+const cartAmount = productInLocalStorage[m].price * productInLocalStorage[m].quantity;
     calculPrice.push(cartAmount);
 
-    // la fonction reduce() permet de garder en mémoire les résultats de l'opération
-    // elle fonctionne comme une boucle, avec un accumulateur et la valeur courante
-    const reduce = (previousValue, currentValue) => previousValue + currentValue;
+// la fonction reduce() permet de garder en mémoire les résultats de l'opération, elle fonctionne comme une boucle, avec un accumulateur et la valeur courante
+const reduce = (previousValue, currentValue) => previousValue + currentValue;
     total = calculPrice.reduce(reduce);
   }
-  const totalPrice = document.getElementById('totalPrice');
+const totalPrice = document.getElementById('totalPrice');
   totalPrice.textContent = total;
 }
 priceAmount();
-
 }
-
 
 // Contact Form
 function postForm() {
@@ -158,8 +155,8 @@ function postForm() {
   order.addEventListener('click', (event) => {
   event.preventDefault();
 
-  // je récupère les données du formulaire dans un objet
-  const contact = {
+// je récupère les données du formulaire dans un objet
+const contact = {
     firstName : document.getElementById('firstName').value,
     lastName : document.getElementById('lastName').value,
     address : document.getElementById('address').value,
@@ -167,10 +164,8 @@ function postForm() {
     email : document.getElementById('email').value
   }
 
-  // --- vérifier la validation des entrées --- //
-  
-  //contrôle prénom
-  function controlFirstName() {
+//contrôle prénom
+function controlFirstName() {
     const validFirstName = contact.firstName;
     if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,20}$/.test(validFirstName)) {
       return true;
@@ -180,8 +175,8 @@ function postForm() {
     }
   } 
 
-  // contrôle nom
-  function controlName() {
+// contrôle nom
+function controlName() {
     const validName = contact.lastName;
     if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,200}$/.test(validName)) {
       return true;
@@ -191,8 +186,8 @@ function postForm() {
     }
   }
 
-  // contrôle adresse
-  function controlAddress() {
+// contrôle adresse
+function controlAddress() {
     const validAddress = contact.address;
     if (/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/.test(validAddress)) {
       return true;
@@ -202,8 +197,8 @@ function postForm() {
     }
   }
 
-  // contrôle ville
-  function controlCity() {
+// contrôle ville
+function controlCity() {
     const validCity = contact.city;
     if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,100}$/.test(validCity)) {
       return true;
@@ -213,8 +208,8 @@ function postForm() {
     }
   }
 
-  // contrôle email
-  function controlEmail() {
+// contrôle email
+function controlEmail() {
     const validEmail = contact.email;
     if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(validEmail)) {
       return true;
@@ -223,12 +218,9 @@ function postForm() {
       emailErrorMsg.innerText = "Erreur ! Email non valide";
     }
   }
-  ////
-  // --- FIN vérifier la validation des entrées --- //
-  ////
 
-  // Après vérification des entrées, j'envoie l'objet contact dans le localStorage
-  function validControl() {
+// Après vérification des entrées, j'envoie l'objet contact dans le localStorage
+function validControl() {
     if (controlFirstName() && controlName() && controlAddress() && controlCity() && controlEmail()) {
       localStorage.setItem('contact', JSON.stringify(contact));
       return true;
@@ -238,17 +230,14 @@ function postForm() {
   }
   validControl()
 
-  // je mets les valeurs du formulaire et les produits sélectionnés
-  // dans un objet...
-  const sendFormData = {
+// je mets les valeurs du formulaire et les produits sélectionnés dans un objet...
+const sendFormData = {
     contact,
     products,
   }
 
-  // j'envoie le formulaire + localStorage (sendFormData) 
-  // ... que j'envoie au serveur
-
-  const options = {
+// j'envoie le formulaire + localStorage (sendFormData) que j'envoie au serveur
+const options = {
     method: 'POST',
     body: JSON.stringify(sendFormData),
     headers: { 
