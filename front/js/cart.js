@@ -1,28 +1,28 @@
-// RECUPERER LES PRODUITS STOCKES DANS LE LOCALSTORAGE   //
+// RECUPERER LES PRODUITS STOCKES DANS LE LOCALSTORAGE
 let products = [];
 let productInLocalStorage = JSON.parse(localStorage.getItem('product'));
 
 // AFFICHER LES PRODUITS DU PANIER
 
-// je sélectionne la partie html concernée par la modification
+// Je sélectionne la partie html concernée par la modification
 let cartAndFormContainer = document.getElementById('cartAndFormContainer');
 
-// si le panier est vide : afficher 'le panier est vide'
+// Si le panier est vide : afficher 'le panier est vide'
 if(productInLocalStorage === null || productInLocalStorage == 0) {
   document.querySelector("#cart__items").innerHTML =`
   <div class="cart__empty">
     <p>Votre panier est vide ! <br> Merci de sélectionner des produits depuis la page d'accueil</p>
   </div>`;
 }
-// si le panier n'est pas vide : afficher les produits dans le localStorage
+// Si le panier n'est pas vide : afficher les produits dans le localStorage
 else{
   let itemCards = [];
  
-// expression initiale; condition; incrémentation
+// Expression initiale; condition; incrémentation
 for (i = 0; i < productInLocalStorage.length; i++) {
   products.push(productInLocalStorage[i].id);
  
-// le code suivant sera injecté à chaque tour de boucle, selon la longueur des produits dans le local storage
+// Je copie le code HTML et sera injecté à chaque tour de boucle, selon la longueur des produits dans le local storage
   itemCards = itemCards + `
     
     <article class="cart__item" data-id="${productInLocalStorage[i].id}" data-color="${productInLocalStorage.color}">
@@ -53,15 +53,15 @@ for (i = 0; i < productInLocalStorage.length; i++) {
   itemCart.innerHTML += itemCards;
   }
 
-// je modifie la quantité dans le panier
+// Modification la quantité dans le panier
 function changeQtt() {
   let itemQtt = document.querySelectorAll('.itemQuantity');
   for (let j = 0; j < itemQtt.length; j++) {
     itemQtt[j].addEventListener('change', (event) => {
     event.preventDefault();
-    // sélection de la nouvelle quantité...
-    // ... qu'on va sauvegarder dans un nouveau tableau
-   // avec les autres éléments du localStorage
+// Sélection de la nouvelle quantité...
+// ... qu'on va sauvegarder dans un nouveau tableau
+// avec les autres éléments du localStorage
     let itemNewQtt = itemQtt[j].value;
     const newLocalStorage = {
       id: productInLocalStorage[j].id,
@@ -73,12 +73,12 @@ function changeQtt() {
       quantity: itemNewQtt, // avec la nouvelle quantité souhaitée
     };
 
-    // actualiser le localStorage avec les nouvelles données récupérées... 
+    // Actualiser le localStorage avec les nouvelles données récupérées... 
     productInLocalStorage[j] = newLocalStorage;
     // ...en transformant les Js en Json
     localStorage.setItem('product', JSON.stringify(productInLocalStorage));
 
-    // avertir de la modification et mettre à jour les totaux
+    // Avertir de la modification et mettre à jour les totaux
     totalArticles();
     priceAmount();
       })
@@ -86,7 +86,7 @@ function changeQtt() {
 }
 changeQtt();
 
-// je supprime un produit dans le panier
+// Je supprime un produit dans le panier
 function deleteArticle() {
   const deleteItem = document.querySelectorAll('.deleteItem');
 
@@ -130,16 +130,16 @@ function totalArticles() {
 }
 totalArticles();
 
-// je calcule le montant total du panier
+// Je calcule le montant total du panier
 function priceAmount() {
   const calculPrice = [];
   for (m = 0; m < productInLocalStorage.length; m++) {
 
-// prix de l'article quantité * prix
+// Prix de l'article quantité * prix
 const cartAmount = productInLocalStorage[m].price * productInLocalStorage[m].quantity;
     calculPrice.push(cartAmount);
 
-// la fonction reduce() permet de garder en mémoire les résultats de l'opération, elle fonctionne comme une boucle, avec un accumulateur et la valeur courante
+// La fonction reduce() permet de garder en mémoire les résultats de l'opération, elle fonctionne comme une boucle, avec un accumulateur et la valeur courante
 const reduce = (previousValue, currentValue) => previousValue + currentValue;
     total = calculPrice.reduce(reduce);
   }
@@ -149,13 +149,13 @@ const totalPrice = document.getElementById('totalPrice');
 priceAmount();
 }
 
-// Contact Form
+// Contact Form REGEX
 function postForm() {
   const order = document.getElementById('order');
   order.addEventListener('click', (event) => {
   event.preventDefault();
 
-// je récupère les données du formulaire dans un objet
+// Je récupère les données du formulaire dans un objet
 const contact = {
     firstName : document.getElementById('firstName').value,
     lastName : document.getElementById('lastName').value,
@@ -164,7 +164,7 @@ const contact = {
     email : document.getElementById('email').value
   }
 
-//contrôle prénom
+// Prénom
 function controlFirstName() {
     const validFirstName = contact.firstName;
     if (/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{3,31}$/i.test(validFirstName)) {
@@ -175,7 +175,7 @@ function controlFirstName() {
     }
   } 
 
-// contrôle nom
+// Nom
 function controlName() {
     const validName = contact.lastName;
     if (/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i.test(validName)) {
@@ -186,7 +186,7 @@ function controlName() {
     }
   }
 
-// contrôle adresse
+// Adresse
 function controlAddress() {
     const validAddress = contact.address;
     if (/^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,60}$/i.test(validAddress)) {
@@ -197,7 +197,7 @@ function controlAddress() {
     }
   }
 
-// contrôle ville
+// Ville
 function controlCity() {
     const validCity = contact.city;
     if (/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i.test(validCity)) {
@@ -208,7 +208,7 @@ function controlCity() {
     }
   }
 
-// contrôle email
+// Email
 function controlEmail() {
     const validEmail = contact.email;
     if (/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,10})+$/i.test(validEmail)) {
@@ -230,13 +230,13 @@ function validControl() {
   }
   validControl()
 
-// je mets les valeurs du formulaire et les produits sélectionnés dans un objet...
+// Je mets les valeurs du formulaire et les produits sélectionnés dans un objet
 const sendFormData = {
     contact,
     products,
   }
 
-// j'envoie le formulaire + localStorage (sendFormData) que j'envoie au serveur
+// J'envoie le formulaire + localStorage (sendFormData) que j'envoie au serveur
 const options = {
     method: 'POST',
     body: JSON.stringify(sendFormData),

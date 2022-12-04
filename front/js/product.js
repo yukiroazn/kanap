@@ -2,7 +2,7 @@
 let params = new URL(window.location.href).searchParams;
 let newID = params.get('id');
 
-// je crée les variables dont j'ai besoin pour manipuler cette page :
+// Je crée les variables dont j'ai besoin pour manipuler cette page :
 const image = document.getElementsByClassName('item__img');
 const title = document.getElementById('title');
 const price = document.getElementById('price');
@@ -12,8 +12,7 @@ const colors = document.getElementById('colors');
 let imageURL = "";
 let imageAlt = "";
 
-// Récupération des articles via Fetch API 
-// je crée la bonne URL pour chaque produit choisi en ajoutant newID
+// Récupération des articles via Fetch API, je crée la bonne URL pour chaque produit choisi en ajoutant newID
 fetch("http://localhost:3000/api/products/" + newID)
   .then(res => res.json())
   .then(data => {
@@ -50,7 +49,7 @@ addToCart.addEventListener('click', () => {
 const selectColors = document.querySelector("#colors").value
 const selectQuantity = document.querySelector("#quantity").value
 
-//Warning message ou cas un oubli de mettre des informations
+// Warning message ou cas un oubli de mettre des informations
 if ( selectColors === "" ) 
 {
 alert("Choisissez une couleur SVP")
@@ -63,7 +62,7 @@ alert("Saisissez une quantitée inférieur à 100")
 return true
 }
 
-//Exécution data de produit
+// Exécution data de produit
 const selection = {
   id: newID,
   image: imageURL,
@@ -74,7 +73,7 @@ const selection = {
   quantity: selectQuantity,
   };
 
-//Importation data de produit dans local storage (add to cart)
+// Importation data de produit dans local storage (add to cart)
 let productInLocalStorage =  JSON.parse(localStorage.getItem('product'));
 
 const addProductLocalStorage = () => 
@@ -83,7 +82,7 @@ productInLocalStorage.push(selection);
 localStorage.setItem('product', JSON.stringify(productInLocalStorage));
 }
 
-//Message confirmation item added to cart
+// Message confirmation item added to cart
 let addConfirm = () => 
 {
 alert("Votre article a été bien ajouté dans le panier");
@@ -91,11 +90,10 @@ alert("Votre article a été bien ajouté dans le panier");
 
 let update = false;
   
-// s'il y a des produits enregistrés dans le localStorage
+// S'il y a des produits enregistrés dans le localStorage
 if (productInLocalStorage) {
 
-// verifier que le produit ne soit pas deja dans le localstorage/panier
-// avec la couleur
+// Verification du produit qu'il ne soit pas deja dans le localstorage/panier avec la couleur
 productInLocalStorage.forEach (function (productOk, key) {
 if (productOk.id == newID && productOk.color == selectColors.value) {
   productInLocalStorage[key].quantity = parseInt(productOk.quantity) + parseInt(selectQuantity.value);
@@ -111,7 +109,7 @@ if (!update) {
   }
   }
 
-// s'il n'y a aucun produit enregistré dans le localStorage, je crée alors un tableau avec les éléments choisi par l'utilisateur
+// S'il n'y a aucun produit enregistré dans le localStorage, je crée alors un tableau avec les éléments choisi par l'utilisateur
   else {
     productInLocalStorage = [];
     addProductLocalStorage();
