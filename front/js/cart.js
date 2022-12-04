@@ -167,7 +167,7 @@ const contact = {
 //contrôle prénom
 function controlFirstName() {
     const validFirstName = contact.firstName;
-    if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,20}$/.test(validFirstName)) {
+    if (/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{3,31}$/i.test(validFirstName)) {
       return true;
     } else {
       let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
@@ -178,7 +178,7 @@ function controlFirstName() {
 // contrôle nom
 function controlName() {
     const validName = contact.lastName;
-    if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,200}$/.test(validName)) {
+    if (/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i.test(validName)) {
       return true;
     } else {
       let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
@@ -189,7 +189,7 @@ function controlName() {
 // contrôle adresse
 function controlAddress() {
     const validAddress = contact.address;
-    if (/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/.test(validAddress)) {
+    if (/^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,60}$/i.test(validAddress)) {
       return true;
     } else {
       let addressErrorMsg = document.getElementById('addressErrorMsg');
@@ -200,7 +200,7 @@ function controlAddress() {
 // contrôle ville
 function controlCity() {
     const validCity = contact.city;
-    if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{3,100}$/.test(validCity)) {
+    if (/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i.test(validCity)) {
       return true;
     } else {
       let cityErrorMsg = document.getElementById('cityErrorMsg');
@@ -211,7 +211,7 @@ function controlCity() {
 // contrôle email
 function controlEmail() {
     const validEmail = contact.email;
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(validEmail)) {
+    if (/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,10})+$/i.test(validEmail)) {
       return true;
     } else {
       let emailErrorMsg = document.getElementById('emailErrorMsg');
