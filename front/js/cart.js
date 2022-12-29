@@ -117,16 +117,13 @@ deleteArticle();
 function totalArticles() {
   let totalItems = 0;
   for (l in productInLocalStorage) {
-    // analyser et convertir la valeur 'quantité' dans le localstorage en une chaîne
-    // et renvoie un entier (parseInteger), sur la base décimale de 10
-    const newQuantity = parseInt(productInLocalStorage[l].quantity, 10);
 
-    // attribuer la valeur retournée par parseInt à la variable totalItems
-    totalItems += newQuantity;
+const newQuantity = parseInt(productInLocalStorage[l].quantity, 10);
+totalItems += newQuantity;
   }
-    // attribuer à #totalQuantité la valeur de totalItems et l'afficher dans le DOM
-    const totalQuantity = document.getElementById('totalQuantity');
-    totalQuantity.textContent = totalItems;
+
+const totalQuantity = document.getElementById('totalQuantity');
+totalQuantity.textContent = totalItems;
 }
 totalArticles();
 
@@ -139,7 +136,6 @@ function priceAmount() {
 const cartAmount = productInLocalStorage[m].price * productInLocalStorage[m].quantity;
     calculPrice.push(cartAmount);
 
-// La fonction reduce() permet de garder en mémoire les résultats de l'opération, elle fonctionne comme une boucle, avec un accumulateur et la valeur courante
 const reduce = (previousValue, currentValue) => previousValue + currentValue;
     total = calculPrice.reduce(reduce);
   }
