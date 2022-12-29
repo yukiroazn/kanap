@@ -8,7 +8,7 @@ let productInLocalStorage = JSON.parse(localStorage.getItem('product'));
 let cartAndFormContainer = document.getElementById('cartAndFormContainer');
 
 // Si le panier est vide : afficher 'le panier est vide'
-if(productInLocalStorage === null || productInLocalStorage == 0) {
+if(productInLocalStorage == null || productInLocalStorage == 0) {
   document.querySelector("#cart__items").innerHTML =`
   <div class="cart__empty">
     <p>Votre panier est vide ! <br> Merci de sélectionner des produits depuis la page d'accueil</p>
@@ -48,7 +48,7 @@ for (i = 0; i < productInLocalStorage.length; i++) {
   </article>
     `;
   }
-  if (i === productInLocalStorage.length) {
+  if (i == productInLocalStorage.length) {
   const itemCart = document.getElementById('cart__items');
   itemCart.innerHTML += itemCards;
   }

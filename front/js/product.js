@@ -48,7 +48,7 @@ const selectColors = document.querySelector("#colors").value
 const selectQuantity = document.querySelector("#quantity").value
 
 // Warning message ou cas un oubli de mettre des informations
-if ( selectColors === "" ) 
+if ( selectColors == "" ) 
 {
 alert("Choisissez une couleur SVP")
 return true
