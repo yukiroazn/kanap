@@ -28,7 +28,8 @@ fetch("http://localhost:3000/api/products/" + newID)
   description.innerText = `${data.description}`;
 
 // Affichage Couleurs + Option
-  for (number in data.colors) {
+  for (number in data.colors) 
+  {
     colors.innerHTML += `<option value="${data.colors[number]}">${data.colors[number]}</option>`;
   }
   })
