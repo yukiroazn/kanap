@@ -1,8 +1,5 @@
-checkout();
+let param = new URL(document.location).searchParams;
+let id = param.get("id");
 
-function checkout()
-{
-    const orderId = document.getElementById('orderId');
-    orderId.innerHTML = localStorage.getItem('orderId');
-    localStorage.clear();
-}
+console.log(id);
+document.getElementById('orderId').innerText = id;

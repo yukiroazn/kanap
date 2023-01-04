@@ -1,6 +1,12 @@
 // Méthode urlSearchParams pour afficher le produit
-let params = new URL(window.location.href).searchParams;
-let newID = params.get('id');
+let param = new URL(document.location).searchParams;
+let id = param.get("id");
+
+// Récupération des articles via Fetch API, je crée la bonne URL pour chaque produit choisi en ajoutant newID
+fetch(`http://localhost:3000/api/products/${id}`)
+.then((response) =>
+response.json()
+.then((data) => {
 
 // Je crée les variables dont j'ai besoin pour manipuler cette page :
 const image = document.getElementsByClassName('item__img');
@@ -12,105 +18,114 @@ const colors = document.getElementById('colors');
 let imageURL = "";
 let imageAlt = "";
 
-// Récupération des articles via Fetch API, je crée la bonne URL pour chaque produit choisi en ajoutant newID
-fetch("http://localhost:3000/api/products/" + newID)
-  .then(res => res.json())
-  .then(data => {
-     
-// Donneés de l'API : je modifie le contenu de chaque variable avec le code HTML
-
 // Affichage Image et AlTxt, Titre, Prix, Description,
-  image[0].innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
-  imageURL = data.imageUrl;
-  imageAlt = data.altTxt;
-  title.innerHTML = `<h1>${data.name}</h1>`;
-  price.innerText = `${data.price}`;
-  description.innerText = `${data.description}`;
+image[0].innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
+imageURL = data.imageUrl;
+imageAlt = data.altTxt;
+title.innerHTML = `<h1>${data.name}</h1>`;
+price.innerText = `${data.price}`;
+description.innerText = `${data.description}`;
 
 // Affichage Couleurs + Option
-  for (number in data.colors) 
-  {
-    colors.innerHTML += `<option value="${data.colors[number]}">${data.colors[number]}</option>`;
-  }
-  })
+for (number in data.colors) 
+{
+  colors.innerHTML += `<option value="${data.colors[number]}">${data.colors[number]}</option>`;
+}
+})
+)
 
 // Message erreur si le serveur ne correspond pas
-  .catch(_error => {
-  alert('error');
-  });
+.catch(_error => {
+alert('error');
+});
 
 // Add to cart 
-const addToCart = document.getElementById('addToCart');
+document.querySelector('#addToCart').addEventListener('click', function(){
 
-// Event click pour récupérer color et quantity une fois cliqué
-addToCart.addEventListener('click', () => {
-const selectColors = document.querySelector("#colors").value
-const selectQuantity = document.querySelector("#quantity").value
-
-// Warning message ou cas un oubli de mettre des informations
+let saveName = document.getElementById('title').innerText;
+let saveUrlImage = document.querySelector('.item__img').innerHTML;
+let selectColors = document.getElementById('colors').value;
+let selectQuantity = document.getElementById("quantity").value;
+    
 if ( selectColors == "" ) 
 {
 alert("Choisissez une couleur SVP")
 return true
 } 
 
-if ( selectQuantity == 0 || quantity > 100 )
-{
-alert("Saisissez une quantitée inférieur à 100")
-return true
-}
+if(selectQuantity < 1 || selectQuantity > 100){
+alert(`Saisissez une quantitée inférieur à 100`);
+}else{
 
 // Exécution data de produit
-const selection = {
-  id: newID,
-  image: imageURL,
-  alt: imageAlt,
-  name: title.textContent,
-  price: price.textContent,
-  color: selectColors,
-  quantity: selectQuantity,
-  };
+let product = {
+idProduct: id,
+nameProduct: saveName,
+urlImageProduct: saveUrlImage,
+colorProduct: selectColors,
+quantityProduct: selectQuantity, 
+};
 
 // Importation data de produit dans local storage (add to cart)
-let productInLocalStorage =  JSON.parse(localStorage.getItem('product'));
+let productInLocalStorage = JSON.parse(localStorage.getItem('produit'));
 
-const addProductLocalStorage = () => 
-{
-productInLocalStorage.push(selection);
-localStorage.setItem('product', JSON.stringify(productInLocalStorage));
+const addProductLocalStorage = () =>{
+productInLocalStorage.push(product);
+localStorage.setItem('produit', JSON.stringify(productInLocalStorage));
 }
 
 // Message confirmation item added to cart
-let addConfirm = () => 
+const addConfirm = () =>
 {
-alert("Votre article a été bien ajouté dans le panier");
+if(window.confirm(`Votre article a été bien ajouté dans le panier`)){
+}
 }
 
 let update = false;
-  
+
 // S'il y a des produits enregistrés dans le localStorage
-if (productInLocalStorage) {
+if(productInLocalStorage)
+{
 
 // Verification du produit qu'il ne soit pas deja dans le localstorage/panier avec la couleur
-productInLocalStorage.forEach (function (productOk, key) {
-if (productOk.id == newID && productOk.color == selectColors.value) {
-  productInLocalStorage[key].quantity = parseInt(productOk.quantity) + parseInt(selectQuantity.value);
-  localStorage.setItem('product', JSON.stringify(productInLocalStorage));
-  update = true;
-  addConfirm();
-  }
-  });
+for(v = 0; v < productInLocalStorage.length; v++){
+if(productInLocalStorage[v].idProduct == product.idProduct){
+if(productInLocalStorage[v].colorProduct == product.colorProduct)
+{
 
-if (!update) {
-  addProductLocalStorage();
-  addConfirm();
-  }
-  }
+let newQuantityProduct = parseInt(productInLocalStorage[v].quantityProduct) + parseInt(selectQuantity);
+if(newQuantityProduct > 100)
+{
+newQuantityProduct = 100;
+}
+                  
+let newProduct = {
+idProduct: id,
+nameProduct: saveName,
+urlImageProduct: saveUrlImage,
+colorProduct: selectColors,
+quantityProduct: newQuantityProduct, 
+};
+productInLocalStorage.splice([v], 1, newProduct);
+
+update = true;
+localStorage.setItem('produit', JSON.stringify(productInLocalStorage));
+}
+}
+}
+
+if(update == false)
+{ 
+addProductLocalStorage();
+}
+              
+addConfirm();
 
 // S'il n'y a aucun produit enregistré dans le localStorage, je crée alors un tableau avec les éléments choisi par l'utilisateur
-  else {
-    productInLocalStorage = [];
-    addProductLocalStorage();
-    addConfirm();
-  }
+}else{ 
+productInLocalStorage = [];
+addProductLocalStorage();
+addConfirm();
+}
+}
 });
